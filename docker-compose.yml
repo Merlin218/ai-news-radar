@@ -1,0 +1,24 @@
+services:
+  ai-news-radar:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-news-radar
+    ports:
+      - "9000:8080"
+    volumes:
+      # Mount data directory to persist data
+      - ./data:/app/data
+      # Mount feeds directory to allow OPML updates
+      - ./feeds:/app/feeds
+    # Optional: Set proxy if needed via environment variables
+    # environment:
+    #   HTTP_PROXY: ${HTTP_PROXY:-}
+    #   HTTPS_PROXY: ${HTTPS_PROXY:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
